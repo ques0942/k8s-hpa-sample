@@ -2,7 +2,8 @@
 hands-on repository for Horizontal Pod Autoscaler
 
 # 構成
-Deployment(echoserver + HPA) + load test client(hey)
+* Kubernetes version: 1.14.10-gke.27
+* Deployment(echoserver + HPA) + load test client(hey)
 
 # ファイル
 * base.yml
@@ -77,3 +78,25 @@ applyしてもPod数が変わらないことを確認する。
   * Pod数が10のままであることを確認する
 
 終わったら `kubectl delete namespace hpa-test` で掃除しておく。
+
+# Case6: replicasありのDeploymentがHPAで最大までスケールアウトした状態でHPAを削除する
+HPA削除後に急激なスケールインが発生しないことを確認する。
+
+1. kubectl apply -f `base.yml`
+  * Pod数が10まで増加することを確認する
+2. kubectl -n hpa-test delete HorizontalPodAutoscaler hpa-test
+
+終わったら `kubectl delete namespace hpa-test` で掃除しておく。
+
+# Case7: replicas無しのDeploymentがHPAで最大までスケールアウトした状態でHPAを削除する
+HPA削除後に急激なスケールインが発生しないことを確認する。
+
+1. kubectl apply -f `no_replicas.yml`
+  * Pod数が10まで増加することを確認する
+2. kubectl -n hpa-test delete HorizontalPodAutoscaler hpa-test
+  * Pod数が10のままであることを確認する
+3. kubectl apply -f `no_replicas_deployment.yml`
+  * Pod数が10のままであることを確認する
+
+終わったら `kubectl delete namespace hpa-test` で掃除しておく。
+
